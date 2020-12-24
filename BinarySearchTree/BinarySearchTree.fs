@@ -24,6 +24,14 @@ let data = function Empty -> failwith "!" | Node(d,_,_) -> d
 
 let create items = Seq.fold insert Empty items
 
-let sortedData root =
-    let rec trav = function Empty -> [] | Node(v,l,r) -> trav l @ [v] @ trav r
-    trav root 
+let inorder root =
+    let rec walk = function Empty -> [] | Node(v,l,r) -> walk l @ [v] @ walk r
+    walk root
+
+let preorder root =
+    let rec walk = function Empty -> [] | Node(v,l,r) ->  [v] @ walk l @ walk r
+    walk root
+
+let postorder root =
+    let rec walk = function Empty -> [] | Node(v,l,r) ->  walk l @ walk r @ [v]
+    walk root
