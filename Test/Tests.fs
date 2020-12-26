@@ -85,10 +85,10 @@ let ``Find node which has left child only`` () =
     | Ok node ->
         match node with
         | Empty -> node |> should equal Node
-        | Node(v,l,r) ->
+        | Node(v,l,Empty) ->
             v |> should equal 23
             l |> getValue |> Option.get |> should equal 20
-            r |> should equal BinarySearchTree.Empty
+        | _ -> true |> should equal false
 
 [<Fact>]
 let ``Find leaf`` () =
@@ -99,10 +99,8 @@ let ``Find leaf`` () =
     | Ok node ->
         match node with
         | Empty -> node |> should equal Node
-        | Node(v,l,r) ->
-            v |> should equal 21
-            l |> should equal BinarySearchTree.Empty
-            r |> should equal BinarySearchTree.Empty
+        | Node(v, Tree.Empty, Tree.Empty) -> v |> should equal 21
+        | _ -> true |> should equal false
 
 [<Fact>]
 let ``Find root`` () =
@@ -125,3 +123,19 @@ let ``Find not existing node`` () =
     match result with
     | Error msg -> msg |> should equal "NotFound"
     | Ok _ -> result |> should equal Error
+
+[<Fact>]
+let ``Find maximum`` () =
+    let tree = create [31; 15; 24; 47; 36; 52; 7; 28; 23; 20; 30; 22; 21]
+    let result = max tree
+    match result with
+    | None -> result |> should equal (Some 52)
+    | Some v -> v |> should equal 52
+
+[<Fact>]
+let ``Find minimum`` () =
+    let tree = create [31; 15; 24; 47; 36; 52; 7; 28; 23; 20; 30; 22; 21]
+    let result = min tree
+    match result with
+    | None -> result |> should equal (Some 7)
+    | Some v -> v |> should equal 7

@@ -1,10 +1,10 @@
 ﻿module BinarySearchTree
 
-type Tree = Node of int * Tree * Tree | Empty
+type Tree<'T when 'T : equality> = Node of 'T * Tree<'T> * Tree<'T> | Empty
 
 let leaf value = Node(value, Empty, Empty)
 
-let getValue = function Empty -> None | Node(d,_,_) -> Some d
+let getValue = function Empty -> None | Node(v,_,_) -> Some v
 
 let rec insert tree value =
     match tree with
@@ -22,8 +22,7 @@ let rec remove root value =
     
     let rec maxNode root =
         match root with
-        | Empty
-        | Node(_,_,Empty) -> root
+        | Empty | Node(_,_,Empty) -> root
         | Node(_,_,r) -> maxNode r
 
     match root with
@@ -44,14 +43,22 @@ let rec findNode root value =
     | Node(v,_,r) when v < value -> findNode r value
     | _ -> Ok root
 
-let min root = failwith ""
+let rec min root =
+    match root with
+    | Empty -> None
+    | Node(v,l,_) -> 
+        match l with       
+        | Empty -> Some v
+        | _ -> min l
 
-let max root = failwith ""
-
-let next root value = failwith ""
-
-let prev root value = failwith ""
-    
+let rec max root = 
+    match root with
+    | Empty -> None
+    | Node(v,_,r) ->
+        match r with
+        | Empty -> Some v
+        | _ -> max r
+   
 let left = function Empty | Node(_,Empty,_) -> None | Node(_,l,_) -> Some l
 
 let right = function Empty | Node(_,_,Empty) -> None | Node(_,_,r) -> Some r
@@ -80,3 +87,9 @@ let breadthFirst root =
             | Node(v,Empty,Empty) -> walk t (v::result)
             | Node(v,l,r) -> walk (t @ [l;r]) (v::result)
     walk [root] [] |> List.rev
+
+let next root value = failwith ""
+
+let prev root value = failwith ""
+
+let balance root = failwith ""
