@@ -4,7 +4,7 @@ type Tree = Node of int * Tree * Tree | Empty
 
 let leaf value = Node(value, Empty, Empty)
 
-let data = function Empty -> failwith "!" | Node(d,_,_) -> d
+let getValue = function Empty -> None | Node(d,_,_) -> Some d
 
 let rec insert tree value =
     match tree with
@@ -34,10 +34,15 @@ let rec remove root value =
     | Node(_,Empty,r) -> r
     | Node(_,l,Empty) -> l
     | Node(_,l,r) -> 
-        let maxValue = (maxNode>>data)l 
+        let maxValue = (maxNode>>getValue>>Option.get)l 
         Node(maxValue, (remove l maxValue), r)
 
-let find root value = failwith ""
+let rec findNode root value =
+    match root with
+    | Empty -> Error "NotFound"
+    | Node(v,l,_) when v > value -> findNode l value
+    | Node(v,_,r) when v < value -> findNode r value
+    | _ -> Ok root
 
 let min root = failwith ""
 
